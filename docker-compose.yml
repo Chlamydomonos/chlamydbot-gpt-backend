@@ -5,3 +5,5 @@ services:
     ports:
       - 8765:8765
     command: node /app/dist/main.ts
+    volumes:
+      - ./local:/app/local
