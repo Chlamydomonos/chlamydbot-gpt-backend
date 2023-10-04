@@ -40,6 +40,17 @@ setInterval(
 genDynamicKey();
 postDynamicKey();
 
+app.post('/update-dynamic-key', async (_req, res) => {
+    genDynamicKey();
+    try {
+        await postDynamicKey();
+    } catch (err) {
+        res.status(500).send({ error: err instanceof Error ? err.message : 'Unknown error' });
+        return;
+    }
+    res.send({ success: true });
+});
+
 app.get('/key-initialized', (_req, res) => {
     res.send({ valid: openAIKey !== '' });
 });
