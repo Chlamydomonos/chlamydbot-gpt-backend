@@ -24,7 +24,11 @@ function genDynamicKey() {
 }
 
 async function postDynamicKey() {
-    await axios.post(`http://${chlamydbotUrl}/set-dynamic-key`, { key: dynamicKey });
+    try {
+        await axios.post(`http://${chlamydbotUrl}/set-dynamic-key`, { key: dynamicKey });
+    } catch (e) {
+        console.log('Failed to update dynamic key', e);
+    }
 }
 
 setInterval(
