@@ -3,14 +3,21 @@ import axios from 'axios';
 import cors from 'cors';
 
 import * as fs from 'fs';
+import * as path from 'path';
 
-const chlamydbotUrlFile = fs.readFileSync('../local/chlamydbot-ip.txt', 'utf8');
+console.log('Starting backend...');
+
+const chlamydbotUrlFile = fs.readFileSync(path.resolve(__dirname, '../local/chlamydbot-ip.txt'), 'utf8');
 const chlamydbotUrl = chlamydbotUrlFile.split('\n')[0];
+
+console.log('Read chlamydbotUrlFile');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+console.log('Created app');
 
 let dynamicKey = '';
 
@@ -27,7 +34,7 @@ async function postDynamicKey() {
     try {
         await axios.post(`http://${chlamydbotUrl}/set-dynamic-key`, { key: dynamicKey });
     } catch (e) {
-        console.log('Failed to update dynamic key', e);
+        console.log('Failed to update dynamic key', e instanceof Error ? e.message : e);
     }
 }
 
@@ -43,6 +50,8 @@ setInterval(
 
 genDynamicKey();
 postDynamicKey();
+
+console.log('Generated dynamic key');
 
 app.post('/update-dynamic-key', async (_req, res) => {
     genDynamicKey();
@@ -100,6 +109,8 @@ app.post('/set-openai-key', (req, res) => {
     openAIKey = newKey;
     res.send({ success: true });
 });
+
+console.log('Created api interfaces');
 
 app.listen(8765, () => {
     console.log('Server listening on port 8765');
