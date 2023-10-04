@@ -1,0 +1,7 @@
+version: 3
+services:
+  backend:
+    build: .
+    ports:
+      - 8765:8765
+    command: node /app/dist/main.ts
